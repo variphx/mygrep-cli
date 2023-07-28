@@ -21,10 +21,10 @@ impl<'a> Config<'a> {
             filename: &args[2],
             is_case_sensitive: {
                 if args.len() == 3 {
+                    false
+                } else if args[3] == "--case-sensitive" || args[3] == "-s" {
                     true
-                } else if args[3] == "--case-sensitive" {
-                    true
-                } else if args[3] == "--case-insensitive" {
+                } else if args[3] == "--case-insensitive" || args[3] == "-i" {
                     false
                 } else {
                     return Err("No such parameters!");
@@ -42,8 +42,6 @@ struct Queried<'a> {
 pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
     let mut stdout = io::stdout().lock();
     let contents = fs::read_to_string(config.filename)?;
-
-    writeln!(&mut stdout, "With text:\n{}", contents)?;
 
     let queried_holder = {
         if config.is_case_sensitive {
